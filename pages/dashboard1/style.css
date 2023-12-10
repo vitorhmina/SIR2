@@ -1,0 +1,145 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+/* Container styles */
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f3f4f6;
+}
+
+/* Header styles */
+header {
+    display: flex;
+    align-items: center;
+    height: 4rem;
+    padding: 0 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #ffffff;
+}
+
+/* Logo styles */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.logo h1 {
+    margin-left: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* User actions styles */
+.user-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.user-actions button {
+    margin-right: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.user-actions span {
+    margin-right: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+}
+
+/* Main content styles */
+.main-content {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Navigation styles */
+nav {
+    width: 16rem;
+    border-right: 1px solid #e5e7eb;
+    background-color: #ffffff;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav li {
+    padding: 1rem;
+}
+
+nav a {
+    text-decoration: none;
+    color: #374151;
+    display: flex;
+    align-items: center;
+}
+
+/* Content grid styles */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* Card styles */
+.grid-container > div {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background-color: #ffffff;
+}
+
+.row {
+    display: flex;
+  }
+  
+  .row > div {
+    flex: 1;
+    margin: 0 10px; /* Adjust margin as needed for spacing */
+  }
+  
+
+/* Heading styles */
+h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Paragraph styles */
+p {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
