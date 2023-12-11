@@ -34,14 +34,8 @@ header {
     align-items: center;
 }
 
-.logo svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    margin-right: 0.5rem;
-}
-
 .logo h1 {
-    margin-left: 0.5rem;
+    margin-left: 1.5rem;
     font-size: 1.25rem;
     font-weight: 700;
 }
@@ -61,17 +55,6 @@ header {
     border: none;
     background-color: transparent;
     cursor: pointer;
-}
-
-.user-actions span {
-    margin-right: 1rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 50%;
-    width: 2rem;
-    height: 2rem;
 }
 
 /* Main content styles */
@@ -99,6 +82,14 @@ nav li {
     padding: 1rem;
 }
 
+.nav-link {
+    color: black;
+}
+
+.nav-link:hover{
+    color: black;
+}
+
 nav a {
     text-decoration: none;
     color: #374151;
@@ -106,30 +97,29 @@ nav a {
     align-items: center;
 }
 
-/* Content grid styles */
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+    gap: 20px;
+    margin-top: 10px;
 }
 
 /* Card styles */
 .grid-container > div {
     border: 1px solid #e5e7eb;
     border-radius: 0.5rem;
-    padding: 1rem;
+    padding: 1.5rem;
     background-color: #ffffff;
 }
 
 .row {
     display: flex;
-  }
-  
-  .row > div {
+}
+
+.row > div {
     flex: 1;
-    margin: 0 10px; /* Adjust margin as needed for spacing */
-  }
-  
+    margin: 0 30px;
+}
 
 /* Heading styles */
 h2 {
