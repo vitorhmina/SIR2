@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css"> <!-- Your additional styles -->
+    <link rel="stylesheet" href="style.css">
     <title>Expense Manager</title>
 </head>
 <body>
@@ -26,7 +26,7 @@
     </header>
 
     <div class="main-content">
-      <nav class="nav flex-column">
+      <nav class="nav flex-column min-vh-100">
         <a class="nav-link" href="#">
           <img src="../icons/icon1.svg" alt="Dashboard Icon"> Dashboard
         </a>
@@ -70,7 +70,7 @@
             </div>
           </div>
 
-          <div class="col-md-3 mb-4">
+          <div class="col-md-6 mb-4">
             <div class="card">
               <div class="card-body">
                 <h2 class="card-title">This Month's Expenses</h2>
@@ -80,7 +80,7 @@
           </div>
         </div>
       </main>
-      </div>
+    </div>
   </div>
 </body>
 </html>

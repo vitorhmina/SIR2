@@ -84,6 +84,7 @@ nav li {
 
 .nav-link {
     color: black;
+    margin-top: 1rem;
 }
 
 .nav-link:hover{
@@ -118,7 +119,8 @@ nav a {
 
 .row > div {
     flex: 1;
-    margin: 0 30px;
+    margin: 0 10px;
+    width: 450px;
 }
 
 /* Heading styles */
