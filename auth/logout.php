@@ -5,6 +5,6 @@ $_SESSION = array();
  
 session_destroy();
  
-header("location: login.php");
+echo '<script>window.location.replace("/spendwise/auth/login.php");</script>';
 exit;
 ?>

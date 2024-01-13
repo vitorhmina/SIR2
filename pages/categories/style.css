@@ -1,0 +1,150 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+/* Container styles */
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f3f4f6;
+}
+
+/* Header styles */
+header {
+    display: flex;
+    align-items: center;
+    height: 4rem;
+    padding: 0 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #ffffff;
+}
+
+/* Logo styles */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo h1 {
+    margin-left: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* User actions styles */
+.user-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.user-actions button {
+    margin-right: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+/* Main content styles */
+.main-content {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    overflow: hidden;
+    height: calc(100vh - 4rem);
+}
+
+/* Navigation styles */
+nav {
+    width: 16rem;
+    border-right: 1px solid #e5e7eb;
+    background-color: #ffffff;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav li {
+    padding: 1rem;
+}
+
+.nav-link {
+    color: black;
+    margin-top: 1rem;
+}
+
+.nav-link:hover{
+    color: black;
+}
+
+nav a {
+    text-decoration: none;
+    color: #374151;
+    display: flex;
+    align-items: center;
+}
+
+/* Heading styles */
+h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Paragraph styles */
+p {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.main-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.list-group-item {
+    display: flex;
+    flex-direction: row;
+}
+
+.delete-icon {
+    background-color: white;
+    border: none;
+    position: absolute;
+    right: 3%;
+}
+
+.update-icon {
+    position: absolute;
+    right: 7%;
+}
+
+
+.add-icon {
+    position: fixed;
+    bottom: 3rem;
+    right: 3rem;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    border: 1px solid black;
+    border-radius: 8px;
+}

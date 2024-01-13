@@ -1,133 +1,143 @@
 <?php
-session_start();
+include '../database/connection.php';
 
-if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-    header("location: ../pages/dasboard1/welcome.php");
-    exit;
-}
- 
-require "../db/connection.php";
-$pdo = pdo_connect_mysql();
- 
-$username = $password = "";
-$username_err = $password_err = $login_err = "";
- 
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-    if(empty(trim($_POST["username"]))){
-        $username_err = "Please fill username.";
-    }
-     else{
-        $username = trim($_POST["username"]);
-    }
-    
-    if(empty(trim($_POST["password"]))){
-        $password_err = "Please fill password.";
-    } 
-    else{
-        $password = trim($_POST["password"]);
-    }
+function authenticateUser($mysqli, $username, $password) {
+    $username = mysqli_real_escape_string($mysqli, $username);
+    $password = mysqli_real_escape_string($mysqli, $password);
 
-    if(empty($username_err) && empty($password_err)){
-        $sql = "SELECT id, username, password FROM users WHERE username = :username";
-        
-        if($stmt = $pdo->prepare($sql)){
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = trim($_POST["username"]);
-            
-            if($stmt->execute()){
-                if($stmt->rowCount() == 1){
-                    if($row = $stmt->fetch()){
-                        $id = $row["id"];
-                        $username = $row["username"];
-                        $hashed_password = $row["password"];
-                        if(password_verify($password, $hashed_password)){
-                            session_start();
+    $sql = "SELECT * FROM users WHERE username = '$username'";
+    $result = $mysqli->query($sql);
 
-                            $_SESSION["loggedin"] = true;
-                            $_SESSION["id"] = $id;
-                            $_SESSION["username"] = $username;                            
-                            
-                            //redirect
-                            header("location: ../pages/welcome.php");
-                        }
-                        else{
-
-                            $login_err = "Username or password wrong!";
-                        }
-                    }
-                } 
-                else{
-                    $login_err = "Username or password wrong!";
-                }
-            } 
-            else{
-                echo "Ups! Try again please.";
-            }
-
-            unset($stmt);
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        if (password_verify($password, $user['password'])) {
+            // Password is correct
+            return $user;
         }
     }
-    
-    unset($pdo);
+
+    return null; // Authentication failed
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+
+    $user = authenticateUser($mysqli, $username, $password);
+
+    if ($user !== null) {
+        // Authentication successful, store user information in session
+        session_start();
+        $_SESSION["user_id"] = $user["id"];
+        $_SESSION["username"] = $user["username"];
+        $_SESSION["role"] = $user["role"];
+
+        // Redirect to the dashboard or any other page after successful login
+        header("Location: /spendwise/pages/dashboard/welcome.php");
+        exit();
+    } else {
+        // Authentication failed, display an error message
+        $error_message = 'Invalid username or password. Please try again.';
+    }
 }
 ?>
- 
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Login</title>    
+    <link rel="icon" href="../pages/landing-page/assets/images/icon-1.png" type="image/x-icon">
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <style>
+        @import url(../pages/images/clash-display.css);
+
+        /* Your existing styles go here */
+        body {
+            font-family: 'Clash Display', sans-serif;
+            background: url('../pages/images/hero-1.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: auto;
+            width: auto;
+            
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-container {
+            text-align: center;
+        }
+
+        .form-title {
+            margin-top: 7rem;
+            font-size: 35px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: 25px;
+            color: white;
+            text-align: left;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .btn-primary {
+            margin-top: 2rem;
+            background-color: #453a30;
+            border-color: #453a30;
+            width: 9rem;
+            height: 3rem;
+            font-size: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #D5CCC3;
+            border-color: #D5CCC3;
+        }
+
+        .btn-register {
+            margin-left: 1rem;
+        }
+
+        .error-message {
+            color: white;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <?php 
-    if(!empty($login_err)){
-        echo '<div class="alert alert-danger">' . $login_err . '</div>';
-    }        
-    ?>
-
-    <section class="vh-100" style="background-color: #000;">
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col col-xl-7">
-                    <div class="card" style="border-radius: 1rem;">
-                        <div class="row g-0">
-                            <div class="col-md-6 col-lg-12 d-flex align-items-center">
-                                <div class="card-body p-4 p-lg-5 text-black">
-                                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                                        <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
-                                    
-                                        <!-- username input -->
-                                        <div class="form-outline mb-4">
-                                            <input type="text" name="username" class="form-control form-control-lg <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>">
-                                                <span class="invalid-feedback"><?php echo $username_err; ?></span>
-                                            <label class="form-label" for="form3Example3">Email address</label>
-                                        </div>
-
-                                        <!-- password input -->
-                                        <div class="form-outline mb-3">
-                                            <input type="password" name="password" class="form-control form-control-lg <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
-                                                <span class="invalid-feedback"><?php echo $password_err; ?></span>
-                                            <label class="form-label" for="form3Example4">Password</label>
-                                        </div>
-
-                                        <div class="text-center text-lg-start mt-4 pt-2">
-                                            <input type="submit" class="btn btn-primary" value="Login">
-                                            <p class="small fw-bold mt-2 pt-1 mb-0">
-                                                <a href="register.php">Create new account</a>
-                                            </p>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 form-container">
+                <h2 class="form-title">Spendwise</h2>
+                <form method="post" action="./login.php">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
                     </div>
-                </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <a href="./register.php" class="btn btn-primary btn-register">Register</a>
+                </form>
+                <?php
+                if (isset($error_message)) {
+                    echo '<div class="error-message">' . $error_message . '</div>';
+                }
+                ?>
             </div>
         </div>
-    </section>
+    </div>
 </body>
 </html>

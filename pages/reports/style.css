@@ -63,6 +63,7 @@ header {
     flex-direction: row;
     flex: 1;
     overflow: hidden;
+    height: calc(100vh - 4rem);
 }
 
 /* Navigation styles */
@@ -98,31 +99,6 @@ nav a {
     align-items: center;
 }
 
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-top: 10px;
-}
-
-/* Card styles */
-.grid-container > div {
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    background-color: #ffffff;
-}
-
-.row {
-    display: flex;
-}
-
-.row > div {
-    flex: 1;
-    margin: 0 10px;
-    width: 450px;
-}
-
 /* Heading styles */
 h2 {
     font-size: 1.25rem;
@@ -134,4 +110,11 @@ h2 {
 p {
     font-size: 1.5rem;
     font-weight: 700;
+}
+
+.main-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
