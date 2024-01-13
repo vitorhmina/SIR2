@@ -133,7 +133,7 @@ if ($monthlySummaryResult && $monthlySummaryResult->num_rows > 0) {
                     <div class="bar-container">
                         <?php foreach ($expensesData as $entry): ?>
                             <div class="bar-and-date">
-                                <div class="bar" style="width: <?php echo $entry['total_amount'] * 5; ?>px;"></div>
+                                <div class="bar" style="width: <?php echo $entry['total_amount'] * 1; ?>px;"></div>
                                 <div class="bar-date"><?php echo $entry['date']; ?></div>
                             </div>
                         <?php endforeach; ?>
@@ -144,7 +144,7 @@ if ($monthlySummaryResult && $monthlySummaryResult->num_rows > 0) {
                     <h2>Monthly Summary</h2>
                     <?php foreach ($monthlySummary as $summary): ?>
                         <div class="bar-and-month">
-                            <div class="bar-summary" style="width: <?php echo $summary['total_amount'] * 5; ?>px;"></div>
+                            <div class="bar-summary" style="width: <?php echo $summary['total_amount'] * 1; ?>px;"></div>
                             <div class="summary-month"><?php echo $summary['month']; ?></div>
                         </div>
                     <?php endforeach; ?>

@@ -84,21 +84,6 @@ if ($result && $result->num_rows > 0) {
                   <input type="date" class="form-control" id="date" name="date" required>
               </div>
               <div class="mb-3">
-                  <label for="category" class="form-label">Category</label>
-                  <select class="form-select" id="category" name="category">
-                    <?php
-                    $categoriesQuery = "SELECT * FROM categories";
-                    $categoriesResult = $mysqli->query($categoriesQuery);
-
-                    if ($categoriesResult && $categoriesResult->num_rows > 0) {
-                        while ($category = $categoriesResult->fetch_assoc()) {
-                            echo "<option value=\"{$category['id']}\">{$category['category_name']}</option>";
-                        }
-                    }
-                    ?>
-                </select>
-              </div>
-              <div class="mb-3">
                   <label for="payment_method" class="form-label">Payment Method</label>
                   <input type="text" class="form-control" id="payment_method" name="payment_method" required>
               </div>

@@ -188,3 +188,10 @@ p {
     margin-left: 10px;
     opacity: 90%;
   }
+
+.category-select {
+    position: absolute;
+    right: 35%;
+    width: 8rem;
+    top: 1px;
+}

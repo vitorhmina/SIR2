@@ -105,7 +105,25 @@ if ($expensesResult && $expensesResult->num_rows > 0) {
                   <strong class="description"><?php echo $expense['description']; ?></strong> 
                   <strong class="amount"><?php echo $expense['amount']; ?>$</strong> 
                   <strong class="date"><?php echo $expense['date']; ?></strong> 
-                  <strong class="category"><?php echo $expense['category_name']; ?></strong> 
+                  <form method="post" action="../../scripts/set_expense_category.php">
+                    <input type="hidden" name="expense_id" value="<?php echo $expense['expense_id']; ?>">
+                    <div class="category-select">
+                        <select class="form-select" name="category" onchange="this.form.submit()">
+                            <option value="">Select a category</option>
+                            <?php
+                            $categoriesQuery = "SELECT * FROM categories";
+                            $categoriesResult = $mysqli->query($categoriesQuery);
+
+                            if ($categoriesResult && $categoriesResult->num_rows > 0) {
+                                while ($category = $categoriesResult->fetch_assoc()) {
+                                    $selected = ($category['category_id'] == $expense['category_id']) ? 'selected' : '';
+                                    echo "<option value=\"{$category['category_id']}\" {$selected}>{$category['category_name']}</option>";
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                  </form>
                   <strong class="method"><?php echo $expense['payment_method']; ?></strong> 
                   <strong class="paid"><?php echo $expense['paid'] ? 'Yes' : 'No'; ?></strong> 
                   <a href="../update-expense/welcome.php?expense_id=<?php echo $expense['expense_id']; ?>">
