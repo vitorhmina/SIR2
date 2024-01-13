@@ -6,16 +6,47 @@ include '../../database/connection.php';
 session_start();
 $userID = $_SESSION['user_id'];
 
-// Fetch user data based on the user ID
-$sql = "SELECT * FROM users WHERE id = $userID";
-$result = $mysqli->query($sql);
+// Check if category ID is provided in the URL
+if (isset($_GET['category_id'])) {
+    $categoryID = $_GET['category_id'];
 
-if ($result && $result->num_rows > 0) {
-    $userData = $result->fetch_assoc();
+    // Fetch category data based on the category ID
+    $categoryQuery = "SELECT * FROM categories WHERE category_id = $categoryID AND user_id = $userID";
+    $categoryResult = $mysqli->query($categoryQuery);
+
+    if ($categoryResult && $categoryResult->num_rows > 0) {
+        $categoryData = $categoryResult->fetch_assoc();
+    } else {
+        // Handle the case where the category data is not found
+        echo "Category not found!";
+        exit();
+    }
 } else {
-    // Handle the case where the user data is not found
-    echo "User not found!";
+    // Redirect to the main page if category ID is not provided
+    header("Location: ../categories/welcome.php");
     exit();
+}
+
+// Check if form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve form data
+    $categoryName = $_POST['category_name'];
+    $color = $_POST['color'];
+
+    // Update category in the database
+    $updateCategoryQuery = "UPDATE categories 
+                            SET category_name = '$categoryName', color = '$color'
+                            WHERE category_id = $categoryID AND user_id = $userID";
+
+    if ($mysqli->query($updateCategoryQuery)) {
+        // Category updated successfully, redirect to categories page or display a success message
+        header("Location: ../categories/welcome.php");
+        exit();
+    } else {
+        // Handle the case where the update failed
+        echo "Error: " . $mysqli->error;
+        exit();
+    }
 }
 ?>
 
@@ -27,7 +58,7 @@ if ($result && $result->num_rows > 0) {
     <link rel="icon" href="../images/icon-1.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <title>Create Expense</title>
+    <title>Update Category</title>
 </head>
 <body>
 
@@ -68,20 +99,23 @@ if ($result && $result->num_rows > 0) {
       </nav>
 
       <div class="main-content col-md-8">
-        <form method="post" action="../../scripts/create_category.php" style="width: 90%;">
+        <form method="post" action="" style="width: 90%;">
+            <input type="hidden" name="category_id" value="<?php echo $categoryData['category_id']; ?>">
+            
             <div class="mb-3 main"  style="margin-top: 2rem;">
                 <label for="category_name" class="form-label">Category Name</label>
-                <input type="text" class="form-control" id="category_name" name="category_name" required>
+                <input type="text" class="form-control" id="category_name" name="category_name" value="<?php echo $categoryData['category_name']; ?>" required>
             </div>
+            
             <div class="mb-3">
-        <label for="color" class="form-label">Color</label>
-        <input type="color" class="form-control" id="color" name="color" value="#000000" style="width: 90%;" required>
-        </div>
+                <label for="color" class="form-label">Color</label>
+                <input type="color" class="form-control" id="color" name="color" value="<?php echo $categoryData['color']; ?>" style="width: 90%;" required>
+            </div>
+            
             <div class="text-center">
-                <button type="submit" class="btn btn-primary">Create Category</button>
+                <button type="submit" class="btn btn-primary">Update Category</button>
             </div>
         </form>
-
       </div>
     </div>
   </div>

@@ -14,6 +14,7 @@ CREATE TABLE categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(50) NOT NULL,
     user_id INT,
+    color VARCHAR(50) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

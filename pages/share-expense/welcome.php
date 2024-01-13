@@ -17,17 +17,6 @@ if ($result && $result->num_rows > 0) {
     echo "User not found!";
     exit();
 }
-
-// Fetch user categories
-$categoriesQuery = "SELECT * FROM categories WHERE user_id = $userID";
-$categoriesResult = $mysqli->query($categoriesQuery);
-
-// Check if categories are found
-if ($categoriesResult && $categoriesResult->num_rows > 0) {
-    $categories = $categoriesResult->fetch_all(MYSQLI_ASSOC);
-} else {
-    $categories = []; // If no categories found, initialize an empty array
-}
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +27,7 @@ if ($categoriesResult && $categoriesResult->num_rows > 0) {
     <link rel="icon" href="../images/icon-1.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <title>SpendWise</title>
+    <title>Create Expense</title>
 </head>
 <body>
 
@@ -46,7 +35,7 @@ if ($categoriesResult && $categoriesResult->num_rows > 0) {
     <header class="d-flex justify-content-between align-items-center py-3">
       <div class="logo d-flex align-items-center">
         <img src="../icons/icon7.svg" alt="Bell Icon" class="me-2">
-        <h1 class="m-0">Category Manager</h1>
+        <h1 class="m-0">Expense Manager</h1>
       </div>
       <div class="user-actions">
         <button class="btn btn-light">
@@ -59,6 +48,7 @@ if ($categoriesResult && $categoriesResult->num_rows > 0) {
     </header>
 
     <div class="d-flex">
+      <!-- Sidebar -->
       <nav class="nav flex-column" style="width: 13%;">
         <a class="nav-link active" href="../dashboard/welcome.php">
           <img src="../icons/icon1.svg" alt="Dashboard Icon"> Dashboard
@@ -77,40 +67,52 @@ if ($categoriesResult && $categoriesResult->num_rows > 0) {
         </a>
       </nav>
 
+      <!-- Main Content -->
       <div class="main-content col-md-8">
-        <div style="width: 95%; margin-top:10px;">
-          <input type="text" id="searchInput" class="form-control" placeholder="Search..." oninput="searchCategories()">
-        </div>
+          <form method="post" action="../../scripts/create_expense.php" style="width: 90%;">
+              
+              <div class="mb-3 main"  style="margin-top: 2rem;">
+                  <label for="description" class="form-label">Description</label>
+                  <input type="text" class="form-control" id="description" name="description" required>
+              </div>
+              <div class="mb-3">
+                  <label for="amount" class="form-label">Amount</label>
+                  <input type="number" class="form-control" id="amount" name="amount" required>
+              </div>
+              <div class="mb-3">
+                  <label for="date" class="form-label">Date</label>
+                  <input type="date" class="form-control" id="date" name="date" required>
+              </div>
+              <div class="mb-3">
+                  <label for="category" class="form-label">Category</label>
+                  <select class="form-select" id="category" name="category">
+                      <?php
+                      $categoriesQuery = "SELECT * FROM categories";
+                      $categoriesResult = $mysqli->query($categoriesQuery);
 
-        <div class="attribute-bar mt-3" style="width: 95%;" >
-          <strong style="margin-left: 5rem;">Category Name</strong>
-          <strong style="margin-left: 15rem;">Category Color</strong>
-        </div>
-
-        <ul class="list-group" style="width: 95%; margin-top: 10px;">
-          <?php foreach ($categories as $category): ?>
-              <li class="list-group-item">
-                  <div class="d-flex align-items-center">
-                      <img class="list-icon" src="../icons/icon10.svg" alt="Categories Icon">
-                      <strong style="margin-left: 3rem;"><?php echo $category['category_name']; ?></strong>
+                      if ($categoriesResult && $categoriesResult->num_rows > 0) {
+                          while ($category = $categoriesResult->fetch_assoc()) {
+                              echo "<option value=\"{$category['id']}\">{$category['category_name']}</option>";
+                          }
+                      }
+                      ?>
+                  </select>
+              </div>
+              <div class="mb-3">
+                  <label for="payment_method" class="form-label">Payment Method</label>
+                  <input type="text" class="form-control" id="payment_method" name="payment_method" required>
+              </div>
+              <div class="mb-3">
+                  <label for="paid" class="form-check-label">Paid</label>
+                  <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="paid" name="paid">
                   </div>
-                  <div class="color-circle" style="background-color: <?php echo $category['color']; ?>"></div>  
-                  <a href="../update-category/welcome.php?category_id=<?php echo $category['category_id']; ?>">
-                      <img class="update-icon" src="../icons/icon9.svg" alt="Update Icon">
-                  </a>
-                  <form method="post" action="../../scripts/delete_category.php">
-                      <input type="hidden" name="category_id" value="<?php echo $category['category_id']; ?>">
-                      <button type="submit" class="delete-icon">
-                          <img src="../icons/icon8.svg" alt="Delete Icon">
-                      </button>
-                  </form>
-              </li>
-          <?php endforeach; ?>
-      </ul>
+              </div>
+              <div class="text-center">
+                  <button type="submit" class="btn btn-primary">Create Expense</button>
+              </div>
+          </form>
       </div>
-      <a href="../add-category/welcome.php">
-        <img class="add-icon" src="../icons/icon11.svg" alt="Add Icon">
-      </a>
     </div>
   </div>
 </body>
