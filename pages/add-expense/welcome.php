@@ -69,7 +69,7 @@ if ($result && $result->num_rows > 0) {
 
       <!-- Main Content -->
       <div class="main-content col-md-8">
-          <form method="post" action="../../scripts/create_expense.php" style="width: 90%;">
+          <form method="post" action="../../scripts/create_expense.php" style="width: 90%;" enctype="multipart/form-data">
               
               <div class="mb-3 main"  style="margin-top: 2rem;">
                   <label for="description" class="form-label">Description</label>
@@ -93,7 +93,9 @@ if ($result && $result->num_rows > 0) {
                       <input class="form-check-input" type="checkbox" id="paid" name="paid">
                   </div>
               </div>
-              <div class="text-center">
+              <label for="attachments">Attachments:</label>
+              <input type="file" name="attachments" id="attachments" multiple accept="image/*">
+              <div class="text-center mt-3">
                   <button type="submit" class="btn btn-primary">Create Expense</button>
               </div>
           </form>

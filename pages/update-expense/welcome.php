@@ -90,7 +90,7 @@ if (!empty($_GET['expense_id'])) {
 
       <!-- Main Content -->
       <div class="main-content col-md-8">
-          <form method="post" action="../../scripts/update_expense.php" style="width: 90%;">
+        <form method="post" action="../../scripts/update_expense.php" style="width: 90%;" enctype="multipart/form-data">
               <input type="hidden" name="expense_id" value="<?php echo $expenseDetails['expense_id']; ?>">
               
               <div class="mb-3 main"  style="margin-top: 2rem;">
@@ -106,22 +106,6 @@ if (!empty($_GET['expense_id'])) {
                   <input type="date" class="form-control" id="date" name="date" value="<?php echo $expenseDetails['date']; ?>" required>
               </div>
               <div class="mb-3">
-                  <label for="category" class="form-label">Category</label>
-                  <select class="form-select" id="category" name="category" required>
-                      <?php
-                      $categoriesQuery = "SELECT * FROM categories";
-                      $categoriesResult = $mysqli->query($categoriesQuery);
-
-                      if ($categoriesResult && $categoriesResult->num_rows > 0) {
-                          while ($category = $categoriesResult->fetch_assoc()) {
-                              $selected = ($category['id'] == $expenseDetails['category_id']) ? 'selected' : '';
-                              echo "<option value=\"{$category['id']}\" $selected>{$category['category_name']}</option>";
-                          }
-                      }
-                      ?>
-                  </select>
-              </div>
-              <div class="mb-3">
                   <label for="payment_method" class="form-label">Payment Method</label>
                   <input type="text" class="form-control" id="payment_method" name="payment_method" value="<?php echo $expenseDetails['payment_method']; ?>" required>
               </div>
@@ -130,6 +114,10 @@ if (!empty($_GET['expense_id'])) {
                   <div class="form-check">
                       <input class="form-check-input" type="checkbox" id="paid" name="paid" <?php echo $expenseDetails['paid'] ? 'checked' : ''; ?>>
                   </div>
+              </div>
+              <div class="mb-3">
+                  <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*">
+                  <small class="form-text text-muted">You can upload one or multiple images.</small>
               </div>
               <div class="text-center">
                   <button type="submit" class="btn btn-primary">Update Expense</button>

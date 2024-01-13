@@ -1,37 +1,48 @@
 <?php
-// update_category.php
-
-// Include your database connection file
 include '../database/connection.php';
 
-// Check if the form is submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the expense ID and selected category from the form
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Other validations and checks...
+
+    // Get expense_id and category from the form
     $expenseID = $_POST['expense_id'];
     $selectedCategory = $_POST['category'];
 
-    // Validate inputs if needed
+    // Check if the selected category is an empty string and handle it accordingly
+    if ($selectedCategory === "") {
+        $categoryID = null; // Set category_id to NULL
+    } else {
+        $categoryID = $selectedCategory;
+    }
 
-    // Update the category in the database
+    // Your SQL query to update the category
     $updateQuery = "UPDATE expenses SET category_id = ? WHERE expense_id = ?";
+
+    // Prepare the statement
     $stmt = $mysqli->prepare($updateQuery);
 
     // Bind parameters
-    $stmt->bind_param('ii', $selectedCategory, $expenseID);
+    $stmt->bind_param("ii", $categoryID, $expenseID);
 
-    // Execute the update query
+    // Execute the statement
     if ($stmt->execute()) {
-        // Redirect back to the page where the form was submitted
+        // Success
+        echo "Category updated successfully!";
+
         header("Location: {$_SERVER['HTTP_REFERER']}");
-        exit();
+
     } else {
+        // Error
         echo "Error updating category: " . $stmt->error;
     }
 
-    // Close statement
+    // Close the statement
     $stmt->close();
-}
 
-// If the form is not submitted or there's an error, handle accordingly
-// ...
+    // Close the database connection
+    $mysqli->close();
+} else {
+    // Handle the case where the form was not submitted
+    echo "Invalid request!";
+}
 ?>

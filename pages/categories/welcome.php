@@ -42,76 +42,97 @@ if ($categoriesResult && $categoriesResult->num_rows > 0) {
 </head>
 <body>
 
-  <div class="container-fluid">
+<div class="container-fluid">
     <header class="d-flex justify-content-between align-items-center py-3">
-      <div class="logo d-flex align-items-center">
-        <img src="../icons/icon7.svg" alt="Bell Icon" class="me-2">
-        <h1 class="m-0">Category Manager</h1>
-      </div>
-      <div class="user-actions">
-        <button class="btn btn-light">
-          <img src="../icons/icon6.svg" alt="Bell Icon">
-        </button>
-        <button class="btn btn-light" onclick="window.location.href='../../auth/logout.php'">
-            <img src="../icons/icon5.svg" alt="Logout Icon">
-        </button>
-      </div>
+        <div class="logo d-flex align-items-center">
+            <img src="../icons/icon7.svg" alt="Bell Icon" class="me-2">
+            <h1 class="m-0">Category Manager</h1>
+        </div>
+        <div class="user-actions">
+            <button class="btn btn-light">
+                <img src="../icons/icon6.svg" alt="Bell Icon">
+            </button>
+            <button class="btn btn-light" onclick="window.location.href='../../auth/logout.php'">
+                <img src="../icons/icon5.svg" alt="Logout Icon">
+            </button>
+        </div>
     </header>
 
     <div class="d-flex">
-      <nav class="nav flex-column" style="width: 13%;">
-        <a class="nav-link active" href="../dashboard/welcome.php">
-          <img src="../icons/icon1.svg" alt="Dashboard Icon"> Dashboard
-        </a>
-        <a class="nav-link" href="../expenses/welcome.php">
-          <img src="../icons/icon2.svg" alt="Expenses Icon"> Expenses
-        </a>
-        <a class="nav-link" href="../categories/welcome.php">
-          <img src="../icons/icon10.svg" alt="Categories Icon"> Categories
-        </a>
-        <a class="nav-link" href="../reports/welcome.php">
-          <img src="../icons/icon3.svg" alt="Reports Icon"> Reports
-        </a>
-        <a class="nav-link" href="../user-settings/welcome.php">
-          <img src="../icons/icon4.svg" alt="User Settings Icon"> User Settings
-        </a>
-      </nav>
+        <nav class="nav flex-column" style="width: 13%;">
+            <a class="nav-link active" href="../dashboard/welcome.php">
+                <img src="../icons/icon1.svg" alt="Dashboard Icon"> Dashboard
+            </a>
+            <a class="nav-link" href="../expenses/welcome.php">
+                <img src="../icons/icon2.svg" alt="Expenses Icon"> Expenses
+            </a>
+            <a class="nav-link" href="../categories/welcome.php">
+                <img src="../icons/icon10.svg" alt="Categories Icon"> Categories
+            </a>
+            <a class="nav-link" href="../reports/welcome.php">
+                <img src="../icons/icon3.svg" alt="Reports Icon"> Reports
+            </a>
+            <a class="nav-link" href="../user-settings/welcome.php">
+                <img src="../icons/icon4.svg" alt="User Settings Icon"> User Settings
+            </a>
+        </nav>
 
-      <div class="main-content col-md-8">
-        <div style="width: 95%; margin-top:10px;">
-          <input type="text" id="searchInput" class="form-control" placeholder="Search..." oninput="searchCategories()">
+        <div class="main-content col-md-8">
+            <div style="width: 95%; margin-top:10px;">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search..." oninput="searchCategories()">
+            </div>
+
+            <div class="attribute-bar mt-3" style="width: 95%;" >
+                <strong style="margin-left: 5rem;">Category Name</strong>
+            </div>
+
+            <ul class="list-group" style="width: 95%; margin-top: 10px;">
+              <?php foreach ($categories as $category): ?>
+                  <li class="list-group-item category-item">
+                      <div class="d-flex align-items-center">
+                          <img class="list-icon" src="../icons/icon10.svg" alt="Categories Icon">
+                          <strong style="margin-left: 3rem;"><?php echo $category['category_name']; ?></strong>
+                      </div>
+                      <a href="../update-category/welcome.php?category_id=<?php echo $category['category_id']; ?>">
+                          <img class="update-icon" src="../icons/icon9.svg" alt="Update Icon">
+                      </a>
+                      <form method="post" action="../../scripts/delete_category.php">
+                          <input type="hidden" name="category_id" value="<?php echo $category['category_id']; ?>">
+                          <button type="submit" class="delete-icon">
+                              <img src="../icons/icon8.svg" alt="Delete Icon">
+                          </button>
+                      </form>
+                  </li>
+              <?php endforeach; ?>
+          </ul>
         </div>
-
-        <div class="attribute-bar mt-3" style="width: 95%;" >
-          <strong style="margin-left: 5rem;">Category Name</strong>
-          <strong style="margin-left: 15rem;">Category Color</strong>
-        </div>
-
-        <ul class="list-group" style="width: 95%; margin-top: 10px;">
-          <?php foreach ($categories as $category): ?>
-              <li class="list-group-item">
-                  <div class="d-flex align-items-center">
-                      <img class="list-icon" src="../icons/icon10.svg" alt="Categories Icon">
-                      <strong style="margin-left: 3rem;"><?php echo $category['category_name']; ?></strong>
-                  </div>
-                  <div class="color-circle" style="background-color: <?php echo $category['color']; ?>"></div>  
-                  <a href="../update-category/welcome.php?category_id=<?php echo $category['category_id']; ?>">
-                      <img class="update-icon" src="../icons/icon9.svg" alt="Update Icon">
-                  </a>
-                  <form method="post" action="../../scripts/delete_category.php">
-                      <input type="hidden" name="category_id" value="<?php echo $category['category_id']; ?>">
-                      <button type="submit" class="delete-icon">
-                          <img src="../icons/icon8.svg" alt="Delete Icon">
-                      </button>
-                  </form>
-              </li>
-          <?php endforeach; ?>
-      </ul>
-      </div>
-      <a href="../add-category/welcome.php">
-        <img class="add-icon" src="../icons/icon11.svg" alt="Add Icon">
-      </a>
+        <a href="../add-category/welcome.php">
+            <img class="add-icon" src="../icons/icon11.svg" alt="Add Icon">
+        </a>
     </div>
-  </div>
+</div>
+
+<script>
+    function searchCategories() {
+        // Get the input value from the search bar
+        var searchInput = document.getElementById('searchInput').value.toLowerCase();
+
+        // Get all list items (categories) in the ul element
+        var categoriesList = document.querySelectorAll('.list-group-item');
+
+        // Loop through each list item and check if it matches the search criteria
+        categoriesList.forEach(function(category) {
+            var categoryName = category.querySelector('strong').innerText.toLowerCase();
+
+            // Check if the category name contains the search input
+            if (categoryName.includes(searchInput)) {
+                category.style.display = ''; // Display the item
+            } else {
+                category.style.display = 'none'; // Hide the item
+            }
+        });
+    }
+</script>
+
 </body>
 </html>

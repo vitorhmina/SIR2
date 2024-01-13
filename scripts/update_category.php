@@ -1,6 +1,6 @@
 <?php
 // Include your database connection file
-include '../../database/connection.php';
+include '../database/connection.php';
 
 // Assume that you have stored the user's ID in the session after login
 session_start();

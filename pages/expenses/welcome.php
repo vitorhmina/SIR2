@@ -32,6 +32,8 @@ if ($expensesResult && $expensesResult->num_rows > 0) {
 } else {
     $expenses = []; // If no expenses found, initialize an empty array
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -108,20 +110,20 @@ if ($expensesResult && $expensesResult->num_rows > 0) {
                   <form method="post" action="../../scripts/set_expense_category.php">
                     <input type="hidden" name="expense_id" value="<?php echo $expense['expense_id']; ?>">
                     <div class="category-select">
-                        <select class="form-select" name="category" onchange="this.form.submit()">
-                            <option value="">Select a category</option>
-                            <?php
-                            $categoriesQuery = "SELECT * FROM categories";
-                            $categoriesResult = $mysqli->query($categoriesQuery);
+                      <select class="form-select" name="category" onchange="this.form.submit()">
+                          <option value="">Select a category</option>
+                          <?php
+                          $categoriesQuery = "SELECT * FROM categories";
+                          $categoriesResult = $mysqli->query($categoriesQuery);
 
-                            if ($categoriesResult && $categoriesResult->num_rows > 0) {
-                                while ($category = $categoriesResult->fetch_assoc()) {
-                                    $selected = ($category['category_id'] == $expense['category_id']) ? 'selected' : '';
-                                    echo "<option value=\"{$category['category_id']}\" {$selected}>{$category['category_name']}</option>";
-                                }
-                            }
-                            ?>
-                        </select>
+                          if ($categoriesResult && $categoriesResult->num_rows > 0) {
+                              while ($category = $categoriesResult->fetch_assoc()) {
+                                  $selected = ($category['category_id'] == $expense['category_id']) ? 'selected' : '';
+                                  echo "<option value=\"{$category['category_id']}\" {$selected}>{$category['category_name']}</option>";
+                              }
+                          }
+                          ?>
+                      </select>
                     </div>
                   </form>
                   <strong class="method"><?php echo $expense['payment_method']; ?></strong> 
@@ -144,5 +146,29 @@ if ($expensesResult && $expensesResult->num_rows > 0) {
       </a>
     </div>
   </div>
+
+  
 </body>
+<script>
+  function searchExpenses() {
+    // Get the input value from the search bar
+    var searchInput = document.getElementById('searchInput').value.toLowerCase();
+
+    // Get all list items (expenses) in the ul element
+    var expensesList = document.querySelectorAll('.list-group-item');
+
+    // Loop through each list item and check if it matches the search criteria
+    expensesList.forEach(function(expense) {
+      var description = expense.querySelector('.description').innerText.toLowerCase();
+
+      // Check if the description contains the search input
+      if (description.includes(searchInput)) {
+        expense.style.display = ''; // Display the item
+      } else {
+        expense.style.display = 'none'; // Hide the item
+      }
+    });
+  }
+</script>
+
 </html>

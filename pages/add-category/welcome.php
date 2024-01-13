@@ -73,10 +73,6 @@ if ($result && $result->num_rows > 0) {
                 <label for="category_name" class="form-label">Category Name</label>
                 <input type="text" class="form-control" id="category_name" name="category_name" required>
             </div>
-            <div class="mb-3">
-        <label for="color" class="form-label">Color</label>
-        <input type="color" class="form-control" id="color" name="color" value="#000000" style="width: 90%;" required>
-        </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Create Category</button>
             </div>

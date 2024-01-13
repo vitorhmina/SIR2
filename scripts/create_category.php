@@ -10,15 +10,13 @@ $userID = $_SESSION['user_id'];
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
     $categoryName = $_POST['category_name'];
-    $color = $_POST['color'];
 
     // Validate and sanitize input
     $categoryName = mysqli_real_escape_string($mysqli, $categoryName);
-    $color = mysqli_real_escape_string($mysqli, $color);
 
     // Insert new category into the database
-    $insertCategoryQuery = "INSERT INTO categories (user_id, category_name, color) 
-                            VALUES ($userID, '$categoryName', '$color')";
+    $insertCategoryQuery = "INSERT INTO categories (user_id, category_name) 
+                            VALUES ($userID, '$categoryName')";
 
     if ($mysqli->query($insertCategoryQuery)) {
         // Category added successfully, redirect to categories page or display a success message

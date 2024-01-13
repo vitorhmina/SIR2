@@ -31,11 +31,10 @@ if (isset($_GET['category_id'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
     $categoryName = $_POST['category_name'];
-    $color = $_POST['color'];
 
     // Update category in the database
     $updateCategoryQuery = "UPDATE categories 
-                            SET category_name = '$categoryName', color = '$color'
+                            SET category_name = '$categoryName'
                             WHERE category_id = $categoryID AND user_id = $userID";
 
     if ($mysqli->query($updateCategoryQuery)) {
@@ -106,12 +105,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="category_name" class="form-label">Category Name</label>
                 <input type="text" class="form-control" id="category_name" name="category_name" value="<?php echo $categoryData['category_name']; ?>" required>
             </div>
-            
-            <div class="mb-3">
-                <label for="color" class="form-label">Color</label>
-                <input type="color" class="form-control" id="color" name="color" value="<?php echo $categoryData['color']; ?>" style="width: 90%;" required>
-            </div>
-            
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Update Category</button>
             </div>

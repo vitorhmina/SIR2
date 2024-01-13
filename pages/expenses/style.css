@@ -159,12 +159,12 @@ p {
 
 .description {
     position: absolute;
-    margin-left: 10%;
+    margin-left: 6%;
 
 }
 
 .share-icon {
-    position: absolute;
+    position: fixed;
     right: 8%;
 }
 
