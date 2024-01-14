@@ -17,6 +17,32 @@ if ($result && $result->num_rows > 0) {
     echo "User not found!";
     exit();
 }
+
+// Fetch the expense details based on the expense ID (passed through URL or form)
+if (!empty($_GET['expense_id'])) {
+    $expenseID = $_GET['expense_id'];
+    $expenseDetailsQuery = "SELECT expenses.*, categories.category_name 
+                            FROM expenses 
+                            LEFT JOIN categories ON expenses.category_id = categories.category_id
+                            WHERE expenses.user_id = $userID AND expenses.expense_id = $expenseID";
+
+    $expenseDetailsResult = $mysqli->query($expenseDetailsQuery);
+
+    if ($expenseDetailsResult && $expenseDetailsResult->num_rows > 0) {
+        $expenseDetails = $expenseDetailsResult->fetch_assoc();
+    } else {
+        echo "Expense not found!";
+        exit();
+    }
+
+    // Fetch attachments for the expense
+    $attachmentsQuery = "SELECT * FROM attachments WHERE expense_id = $expenseID";
+    $attachmentsResult = $mysqli->query($attachmentsQuery);
+
+    if ($attachmentsResult && $attachmentsResult->num_rows > 0) {
+        $attachments = $attachmentsResult->fetch_all(MYSQLI_ASSOC);
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +53,7 @@ if ($result && $result->num_rows > 0) {
     <link rel="icon" href="../images/icon-1.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <title>Create Expense</title>
+    <title>SpendWise</title>
 </head>
 <body>
 
@@ -48,7 +74,6 @@ if ($result && $result->num_rows > 0) {
     </header>
 
     <div class="d-flex">
-      <!-- Sidebar -->
       <nav class="nav flex-column" style="width: 13%;">
         <a class="nav-link active" href="../dashboard/welcome.php">
           <img src="../icons/icon1.svg" alt="Dashboard Icon"> Dashboard
@@ -67,40 +92,24 @@ if ($result && $result->num_rows > 0) {
         </a>
       </nav>
 
-      <!-- Main Content -->
       <div class="main-content col-md-8">
-          <form method="post" action="../../scripts/create_expense.php" style="width: 90%;" enctype="multipart/form-data">
-              
-              <div class="mb-3 main"  style="margin-top: 2rem;">
-                  <label for="description" class="form-label">Description</label>
-                  <input type="text" class="form-control" id="description" name="description" required>
-              </div>
-              <div class="mb-3">
-                  <label for="amount" class="form-label">Amount</label>
-                  <input type="number" class="form-control" id="amount" name="amount" required>
-              </div>
-              <div class="mb-3">
-                  <label for="date" class="form-label">Date</label>
-                  <input type="date" class="form-control" id="date" name="date" required>
-              </div>
-              <div class="mb-3">
-                  <label for="payment_method" class="form-label">Payment Method</label>
-                  <input type="text" class="form-control" id="payment_method" name="payment_method" required>
-              </div>
-              <div class="mb-3">
-                  <label for="paid" class="form-check-label">Paid</label>
-                  <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="paid" name="paid">
-                  </div>
-              </div>
-              <div class="mb-3">
-                  <label style="color: white; font-weight: bold; padding-top: 2vh;" for="expense_image">Attachment</label>
-                  <input type="file" id="expense_image" name="expense_image" accept="image/*" class="form-control">
-              </div>
-              <div class="text-center mt-3">
-                  <button type="submit" class="btn btn-primary">Create Expense</button>
-              </div>
-          </form>
+        <?php if (!empty($attachments)): ?>
+          <div class="mb-3">
+              <ul>
+                  <?php foreach ($attachments as $attachment): ?>
+                      <?php
+                      $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                      $fileExtension = pathinfo($attachment['file_path'], PATHINFO_EXTENSION);
+                      if (in_array(strtolower($fileExtension), $imageExtensions)):
+                      ?>
+                          <ul>
+                              <img class="mt-3" src="../<?php echo $attachment['file_path']; ?>" alt="Attachment <?php echo $attachment['attachment_id']; ?>" style="max-width: 80%; height: 90%;">
+                      </ul>
+                      <?php endif; ?>
+                  <?php endforeach; ?>
+              </ul>
+          </div>
+        <?php endif; ?>
       </div>
     </div>
   </div>

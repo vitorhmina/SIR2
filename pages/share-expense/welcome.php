@@ -2,7 +2,7 @@
 // Include your database connection file
 include '../../database/connection.php';
 
-// Assume that you have stored the user's ID in the session after login
+// Assume that you have stored the user's ID and expense ID in the session after login
 session_start();
 $userID = $_SESSION['user_id'];
 
@@ -15,6 +15,19 @@ if ($result && $result->num_rows > 0) {
 } else {
     // Handle the case where the user data is not found
     echo "User not found!";
+    exit();
+}
+
+// Fetching expense_id based on some criteria (you may modify this based on your logic)
+$expenseQuery = "SELECT expense_id, description FROM expenses WHERE user_id = $userID LIMIT 1";
+$expenseResult = $mysqli->query($expenseQuery);
+
+if ($expenseResult && $expenseResult->num_rows > 0) {
+    $expenseData = $expenseResult->fetch_assoc();
+    $expenseID = $expenseData['expense_id'];
+} else {
+    // Handle the case where no expenses are found
+    echo "No expenses found!";
     exit();
 }
 ?>
@@ -31,89 +44,68 @@ if ($result && $result->num_rows > 0) {
 </head>
 <body>
 
-  <div class="container-fluid">
+<div class="container-fluid">
     <header class="d-flex justify-content-between align-items-center py-3">
-      <div class="logo d-flex align-items-center">
-        <img src="../icons/icon7.svg" alt="Bell Icon" class="me-2">
-        <h1 class="m-0">Expense Manager</h1>
-      </div>
-      <div class="user-actions">
-        <button class="btn btn-light">
-          <img src="../icons/icon6.svg" alt="Bell Icon">
-        </button>
-        <button class="btn btn-light" onclick="window.location.href='../../auth/logout.php'">
-            <img src="../icons/icon5.svg" alt="Logout Icon">
-        </button>
-      </div>
+        <div class="logo d-flex align-items-center">
+            <img src="../icons/icon7.svg" alt="Bell Icon" class="me-2">
+            <h1 class="m-0">Expense Manager</h1>
+        </div>
+        <div class="user-actions">
+            <button class="btn btn-light">
+                <img src="../icons/icon6.svg" alt="Bell Icon">
+            </button>
+            <button class="btn btn-light" onclick="window.location.href='../../auth/logout.php'">
+                <img src="../icons/icon5.svg" alt="Logout Icon">
+            </button>
+        </div>
     </header>
 
     <div class="d-flex">
-      <!-- Sidebar -->
-      <nav class="nav flex-column" style="width: 13%;">
-        <a class="nav-link active" href="../dashboard/welcome.php">
-          <img src="../icons/icon1.svg" alt="Dashboard Icon"> Dashboard
-        </a>
-        <a class="nav-link" href="../expenses/welcome.php">
-          <img src="../icons/icon2.svg" alt="Expenses Icon"> Expenses
-        </a>
-        <a class="nav-link" href="../categories/welcome.php">
-          <img src="../icons/icon10.svg" alt="Categories Icon"> Categories
-        </a>
-        <a class="nav-link" href="../reports/welcome.php">
-          <img src="../icons/icon3.svg" alt="Reports Icon"> Reports
-        </a>
-        <a class="nav-link" href="../user-settings/welcome.php">
-          <img src="../icons/icon4.svg" alt="User Settings Icon"> User Settings
-        </a>
-      </nav>
+        <!-- Sidebar -->
+        <nav class="nav flex-column" style="width: 13%;">
+            <a class="nav-link active" href="../dashboard/welcome.php">
+                <img src="../icons/icon1.svg" alt="Dashboard Icon"> Dashboard
+            </a>
+            <a class="nav-link" href="../expenses/welcome.php">
+                <img src="../icons/icon2.svg" alt="Expenses Icon"> Expenses
+            </a>
+            <a class="nav-link" href="../categories/welcome.php">
+                <img src="../icons/icon10.svg" alt="Categories Icon"> Categories
+            </a>
+            <a class="nav-link" href="../reports/welcome.php">
+                <img src="../icons/icon3.svg" alt="Reports Icon"> Reports
+            </a>
+            <a class="nav-link" href="../user-settings/welcome.php">
+                <img src="../icons/icon4.svg" alt="User Settings Icon"> User Settings
+            </a>
+        </nav>
 
-      <!-- Main Content -->
-      <div class="main-content col-md-8">
-          <form method="post" action="../../scripts/create_expense.php" style="width: 90%;">
-              
-              <div class="mb-3 main"  style="margin-top: 2rem;">
-                  <label for="description" class="form-label">Description</label>
-                  <input type="text" class="form-control" id="description" name="description" required>
-              </div>
-              <div class="mb-3">
-                  <label for="amount" class="form-label">Amount</label>
-                  <input type="number" class="form-control" id="amount" name="amount" required>
-              </div>
-              <div class="mb-3">
-                  <label for="date" class="form-label">Date</label>
-                  <input type="date" class="form-control" id="date" name="date" required>
-              </div>
-              <div class="mb-3">
-                  <label for="category" class="form-label">Category</label>
-                  <select class="form-select" id="category" name="category">
-                      <?php
-                      $categoriesQuery = "SELECT * FROM categories";
-                      $categoriesResult = $mysqli->query($categoriesQuery);
+        <!-- Main Content -->
+        <div class="main-content col-md-8">
+            <form method="post" action="../../scripts/share_expense.php" style="width: 90%;">
+                <input type="hidden" name="expense_id" value="<?php echo $expenseID; ?>">
+                <div class="mb-3">
+                    <label for="shared_user" class="form-label">Share with User</label>
+                    <select class="form-select" id="shared_user" name="shared_user">
+                        <?php
+                        // Fetch users to whom the expense can be shared
+                        $usersQuery = "SELECT * FROM users WHERE id != $userID";
+                        $usersResult = $mysqli->query($usersQuery);
 
-                      if ($categoriesResult && $categoriesResult->num_rows > 0) {
-                          while ($category = $categoriesResult->fetch_assoc()) {
-                              echo "<option value=\"{$category['id']}\">{$category['category_name']}</option>";
-                          }
-                      }
-                      ?>
-                  </select>
-              </div>
-              <div class="mb-3">
-                  <label for="payment_method" class="form-label">Payment Method</label>
-                  <input type="text" class="form-control" id="payment_method" name="payment_method" required>
-              </div>
-              <div class="mb-3">
-                  <label for="paid" class="form-check-label">Paid</label>
-                  <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="paid" name="paid">
-                  </div>
-              </div>
-              <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Create Expense</button>
-              </div>
-          </form>
-      </div>
+                        if ($usersResult && $usersResult->num_rows > 0) {
+                            while ($user = $usersResult->fetch_assoc()) {
+                                echo "<option value=\"{$user['id']}\">{$user['username']}</option>";
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Share Expense</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
+</div>
 </body>
 </html>

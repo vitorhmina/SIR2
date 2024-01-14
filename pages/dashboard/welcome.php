@@ -2,9 +2,22 @@
 // Include your database connection file
 include '../../database/connection.php';
 
+// Start the session
+session_start();
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to the login page or handle accordingly
+    header("Location: ../../auth/login.php");
+    exit();
+}
+
+// Get the user ID from the session
+$userID = $_SESSION['user_id'];
+
 // Function to get the total expenses value
-function getTotalExpenses($mysqli) {
-    $sql = "SELECT SUM(amount) AS total FROM expenses";
+function getTotalExpenses($mysqli, $userID) {
+    $sql = "SELECT SUM(amount) AS total FROM expenses WHERE user_id = $userID";
     $result = $mysqli->query($sql);
 
     if ($result && $result->num_rows > 0) {
@@ -16,9 +29,9 @@ function getTotalExpenses($mysqli) {
 }
 
 // Function to get today's expenses value
-function getTodayExpenses($mysqli) {
+function getTodayExpenses($mysqli, $userID) {
   $today = date('Y-m-d');
-  $sql = "SELECT SUM(amount) AS total FROM expenses WHERE DATE(date) = '$today'";
+  $sql = "SELECT SUM(amount) AS total FROM expenses WHERE user_id = $userID AND DATE(date) = '$today'";
   $result = $mysqli->query($sql);
 
   if ($result && $result->num_rows > 0) {
@@ -30,10 +43,10 @@ function getTodayExpenses($mysqli) {
 }
 
 // Function to get this week's expenses value
-function getThisWeekExpenses($mysqli) {
+function getThisWeekExpenses($mysqli, $userID) {
   $startOfWeek = date('Y-m-d', strtotime('monday this week'));
   $endOfWeek = date('Y-m-d', strtotime('sunday this week'));
-  $sql = "SELECT SUM(amount) AS total FROM expenses WHERE DATE(date) BETWEEN '$startOfWeek' AND '$endOfWeek'";
+  $sql = "SELECT SUM(amount) AS total FROM expenses WHERE user_id = $userID AND DATE(date) BETWEEN '$startOfWeek' AND '$endOfWeek'";
   $result = $mysqli->query($sql);
 
   if ($result && $result->num_rows > 0) {
@@ -45,10 +58,10 @@ function getThisWeekExpenses($mysqli) {
 }
 
 // Function to get this month's expenses value
-function getThisMonthExpenses($mysqli) {
+function getThisMonthExpenses($mysqli, $userID) {
   $startOfMonth = date('Y-m-01');
   $endOfMonth = date('Y-m-t');
-  $sql = "SELECT SUM(amount) AS total FROM expenses WHERE DATE(date) BETWEEN '$startOfMonth' AND '$endOfMonth'";
+  $sql = "SELECT SUM(amount) AS total FROM expenses WHERE user_id = $userID AND DATE(date) BETWEEN '$startOfMonth' AND '$endOfMonth'";
   $result = $mysqli->query($sql);
 
   if ($result && $result->num_rows > 0) {
@@ -59,12 +72,27 @@ function getThisMonthExpenses($mysqli) {
   return 0; // Return 0 if no expenses or an error occurred
 }
 
-// Call the functions to get the total and various period expenses
-$totalExpenses = getTotalExpenses($mysqli);
-$todayExpenses = getTodayExpenses($mysqli);
-$thisWeekExpenses = getThisWeekExpenses($mysqli);
-$thisMonthExpenses = getThisMonthExpenses($mysqli);
+// Function to get the total unpaid expenses value
+function getTotalUnpaidExpenses($mysqli, $userID) {
+  $sql = "SELECT SUM(amount) AS total FROM expenses WHERE user_id = $userID AND paid = 0";
+  $result = $mysqli->query($sql);
+
+  if ($result && $result->num_rows > 0) {
+      $row = $result->fetch_assoc();
+      return $row['total'];
+  }
+
+  return 0; // Return 0 if no unpaid expenses or an error occurred
+}
+
+// Call the functions with the user ID
+$totalExpenses = getTotalExpenses($mysqli, $userID);
+$todayExpenses = getTodayExpenses($mysqli, $userID);
+$thisWeekExpenses = getThisWeekExpenses($mysqli, $userID);
+$thisMonthExpenses = getThisMonthExpenses($mysqli, $userID);
+$totalUnpaidExpenses = getTotalUnpaidExpenses($mysqli, $userID);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -114,46 +142,45 @@ $thisMonthExpenses = getThisMonthExpenses($mysqli);
         </a>
       </nav>
 
-      <!-- Main Content -->
       <main class="main-content col-md-8">
         <div class="row">
-          <div class="col-md-3 mb-4">
-            <div class="card">
-              <div class="card-body">
-                <h2 class="card-title">Daily Expenses</h2>
-                <p class="card-text">$<?php echo number_format($todayExpenses, 2); ?></p>
-              </div>
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Daily Expenses</h2>
+                        <p class="card-text">$<?php echo number_format($todayExpenses, 2); ?></p>
+                    </div>
+                </div>
             </div>
-          </div>
 
-          <div class="col-md-3 mb-4">
-            <div class="card">
-              <div class="card-body">
-                <h2 class="card-title">Weekly Expenses</h2>
-                <p class="card-text">$<?php echo number_format($thisWeekExpenses, 2); ?></p>
-              </div>
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Weekly Expenses</h2>
+                        <p class="card-text">$<?php echo number_format($thisWeekExpenses, 2); ?></p>
+                    </div>
+                </div>
             </div>
-          </div>
 
-          <div class="col-md-6 mb-4">
-            <div class="card">
-              <div class="card-body">
-                <h2 class="card-title">Monthly Expenses</h2>
-                <p class="card-text">$<?php echo number_format($thisMonthExpenses, 2); ?></p>
-              </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Monthly Expenses</h2>
+                        <p class="card-text">$<?php echo number_format($thisMonthExpenses, 2); ?></p>
+                    </div>
+                </div>
             </div>
-          </div>
 
-          <div class="col-md-3 mb-4">
-            <div class="card">
-              <div class="card-body">
-                <h2 class="card-title">Total Expenses</h2>
-                <p class="card-text">$<?php echo number_format($totalExpenses, 2); ?></p>
-              </div>
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Total Expenses</h2>
+                        <p class="card-text">$<?php echo number_format($totalExpenses, 2); ?></p>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </main>
+    </main>
     </div>
   </div>
 </body>

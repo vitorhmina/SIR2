@@ -32,8 +32,6 @@ if ($expensesResult && $expensesResult->num_rows > 0) {
 } else {
     $expenses = []; // If no expenses found, initialize an empty array
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -103,7 +101,9 @@ if ($expensesResult && $expensesResult->num_rows > 0) {
         <ul class="list-group" style="width: 95%; margin-top: 10px;">
           <?php foreach ($expenses as $expense): ?>
               <li class="list-group-item">
+                  <a href="../expense-details/welcome.php?expense_id=<?php echo $expense['expense_id']; ?>">
                   <img class="list-icon" src="../icons/icon2.svg" alt="Expenses Icon">
+                  </a>
                   <strong class="description"><?php echo $expense['description']; ?></strong> 
                   <strong class="amount"><?php echo $expense['amount']; ?>$</strong> 
                   <strong class="date"><?php echo $expense['date']; ?></strong> 
@@ -127,7 +127,10 @@ if ($expensesResult && $expensesResult->num_rows > 0) {
                     </div>
                   </form>
                   <strong class="method"><?php echo $expense['payment_method']; ?></strong> 
-                  <strong class="paid"><?php echo $expense['paid'] ? 'Yes' : 'No'; ?></strong> 
+                  <strong class="paid"><?php echo $expense['paid'] ? 'Yes' : 'No'; ?></strong>
+                  <a href="../share-expense/welcome.php?expense_id=<?php echo $expense['expense_id']; ?>">
+                    <img class="share-icon" src="../icons/icon12.svg" alt="Share Icon">
+                  </a>
                   <a href="../update-expense/welcome.php?expense_id=<?php echo $expense['expense_id']; ?>">
                     <img class="update-icon" src="../icons/icon9.svg" alt="Update Icon">
                   </a>
@@ -159,16 +162,18 @@ if ($expensesResult && $expensesResult->num_rows > 0) {
 
     // Loop through each list item and check if it matches the search criteria
     expensesList.forEach(function(expense) {
-      var description = expense.querySelector('.description').innerText.toLowerCase();
+        var description = expense.querySelector('.description').innerText.toLowerCase();
+        var method = expense.querySelector('.method').innerText.toLowerCase();
 
-      // Check if the description contains the search input
-      if (description.includes(searchInput)) {
-        expense.style.display = ''; // Display the item
-      } else {
-        expense.style.display = 'none'; // Hide the item
-      }
+        // Check if the description contains the search input and method matches
+        if (description.includes(searchInput) || method.includes(searchInput)) {
+            expense.style.display = ''; // Display the item
+        } else {
+            expense.style.display = 'none'; // Hide the item
+        }
     });
-  }
+}
+
 </script>
 
 </html>

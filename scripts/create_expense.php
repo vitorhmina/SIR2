@@ -24,31 +24,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Expense added successfully, get the ID of the inserted expense
         $expenseID = $mysqli->insert_id;
 
-        // Handle file uploads
-        if (!empty($_FILES['attachments']['name'][0])) {
-            $uploadDir = 'uploads/'; // Change this to your desired upload directory
-            $copyDir = '../pages/images/'; // Change this to the directory where you want to save a copy
+        // Check if an image file was uploaded
+        if (!empty($_FILES['expense_image']['name'])) {
+            // Specify the directory where you want to save the images
+            $uploadDirectory = '../images/';
+            
+            // Generate a unique name for the image file
+            $imageName = $expenseID . '_' . basename($_FILES['expense_image']['name']);
+            
+            // Construct the complete file path
+            $filePath = $uploadDirectory . $imageName;
 
-            foreach ($_FILES['attachments']['name'] as $key => $fileName) {
-                $uploadFile = $uploadDir . basename($fileName);
-                $copyFile = $copyDir . basename($fileName); // Create a copy file path
-
-                if (move_uploaded_file($_FILES['attachments']['tmp_name'][$key], $uploadFile)) {
-                    // Insert the file path into the attachments table
-                    $insertAttachmentQuery = "INSERT INTO attachments (expense_id, file_path)
-                                              VALUES ($expenseID, '$uploadFile')";
-
-                    $insertAttachmentResult = $mysqli->query($insertAttachmentQuery);
-
-                    if (!$insertAttachmentResult) {
-                        echo "Error inserting attachment: " . $mysqli->error;
-                    }
-
-                    // Save a copy to another directory
-                    copy($uploadFile, $copyFile);
-                } else {
-                    echo "Error uploading file: " . $_FILES['attachments']['error'][$key];
+            // Move the uploaded file to the destination folder
+            if (move_uploaded_file($_FILES['expense_image']['tmp_name'], $filePath)) {
+                // Insert a record in the attachments table
+                $insertAttachmentQuery = "INSERT INTO attachments (expense_id, file_path) VALUES ($expenseID, '$filePath')";
+                
+                if (!$mysqli->query($insertAttachmentQuery)) {
+                    // Handle the case where the insertion of attachment failed
+                    echo "Error inserting attachment: " . $mysqli->error;
                 }
+            } else {
+                // Handle the case where file upload failed
+                echo "Error uploading file.";
             }
         }
 
